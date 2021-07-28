@@ -10,4 +10,3 @@
 2. OC下对MJExtension导出mapper函数增加 mj_ 前缀
 3. key对应的值为数组时将数组的所有元素的key集中到一起再生成model(之前只取数组首元素)
 
-### 顺便对Swift json model 的互相转换做了个简单的性能测试，代码在[这里](https://github.com/donggelaile/SwiftJsonModel)
