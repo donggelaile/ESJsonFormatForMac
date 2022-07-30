@@ -269,10 +269,10 @@
         key = [key uppercaseString];
     }
     if ([value isKindOfClass:[NSString class]]) {
-        return [NSString stringWithFormat:@"    @objc var %@: %@",key,typeStr];
+        return [NSString stringWithFormat:@"    var %@: %@",key,typeStr];
     }else if([value isKindOfClass:[@(YES) class]]){
         typeStr = @"Bool";
-        return [NSString stringWithFormat:@"    @objc var %@: %@ = false",key,typeStr];
+        return [NSString stringWithFormat:@"    var %@: %@ = false",key,typeStr];
     }else if([value isKindOfClass:[NSNumber class]]){
         NSString *valueStr = [NSString stringWithFormat:@"%@",value];
         if ([valueStr rangeOfString:@"."].location!=NSNotFound){
@@ -280,20 +280,20 @@
         }else{
             typeStr = @"Int";
         }
-        return [NSString stringWithFormat:@"    @objc var %@: %@ = 0",key,typeStr];
+        return [NSString stringWithFormat:@"    var %@: %@ = 0",key,typeStr];
     }else if([value isKindOfClass:[NSArray class]]){
         ESClassInfo *childInfo = classInfo.propertyArrayDic[key];
         NSString *type = childInfo.className;
-        return [NSString stringWithFormat:@"    @objc var %@: [%@]?",key,type==nil?@"String":type];
+        return [NSString stringWithFormat:@"    var %@: [%@]?",key,type==nil?@"String":type];
     }else if ([value isKindOfClass:[NSDictionary class]]){
         ESClassInfo *childInfo = classInfo.propertyClassDic[key];
         typeStr = childInfo.className;
         if (!typeStr) {
             typeStr = [key capitalizedString];
         }
-        return [NSString stringWithFormat:@"    @objc var %@: %@?",key,typeStr];
+        return [NSString stringWithFormat:@"    var %@: %@?",key,typeStr];
     }
-    return [NSString stringWithFormat:@"    @objc var %@: %@",key,typeStr];
+    return [NSString stringWithFormat:@"    var %@: %@",key,typeStr];
 }
 
 
@@ -308,9 +308,9 @@
     NSString *superClassString = [[NSUserDefaults standardUserDefaults] valueForKey:@"SuperClass"];
     NSMutableString *result = nil;
     if (superClassString&&superClassString.length>0) {
-        result = [NSMutableString stringWithFormat:@"class %@: %@ {\n",classInfo.className,superClassString];
+        result = [NSMutableString stringWithFormat:@"\n@objcMembers\nclass %@: %@ {\n",classInfo.className,superClassString];
     }else{
-        result = [NSMutableString stringWithFormat:@"\nclass %@: NSObject {\n",classInfo.className];
+        result = [NSMutableString stringWithFormat:@"\n@objcMembers\nclass %@: NSObject {\n",classInfo.className];
     }
     [result appendString:classInfo.propertyContent];
     [result appendString:@"\n"];
@@ -383,11 +383,11 @@
         if (isYYModel) {
             
             //append method content (objectClassInArray) if YYModel
-            methodStr = [NSString stringWithFormat:@"    @objc static func modelContainerPropertyGenericClass() -> Dictionary<String, Any> {\n        return [%@]\n    }",result];
+            methodStr = [NSString stringWithFormat:@"    static func modelContainerPropertyGenericClass() -> Dictionary<String, Any> {\n        return [%@]\n    }",result];
         }else{
             // append method content (objectClassInArray)
             
-            methodStr = [NSString stringWithFormat:@"    @objc static func mj_objectClassInArray() -> Dictionary<String, Any> {\n        return [%@]\n    }",result];
+            methodStr = [NSString stringWithFormat:@"    static func mj_objectClassInArray() -> Dictionary<String, Any> {\n        return [%@]\n    }",result];
         }
         
         return methodStr;
@@ -417,7 +417,7 @@
         
         if ([result hasSuffix:@", "]) {
             result = [NSMutableString stringWithFormat:@"%@",[result substringToIndex:result.length-2]];
-            NSString *methodStr = [NSString stringWithFormat:@"    @objc static func modelCustomPropertyMapper() -> Dictionary<String, Any> {\n        return [%@]\n    }\n",result];
+            NSString *methodStr = [NSString stringWithFormat:@"    static func modelCustomPropertyMapper() -> Dictionary<String, Any> {\n        return [%@]\n    }\n",result];
             return methodStr;
         }
     
